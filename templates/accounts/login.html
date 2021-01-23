@@ -1,0 +1,24 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block contain %}
+   <div class="card">
+    <div class="card-title">
+            <h1>Login</h1>
+    </div>
+    <div class="card-body">
+    <form method="post" action=".">
+        {% csrf_token %}
+        {% for f in form %}
+            <p>{{ f.label }}</p>
+            <div class="form-group">
+            {{ f }}
+            </div>
+
+        {% endfor %}
+        <input type="submit" class="btn btn-outline-success" value="Submit" style="margin-left: 50px">
+    </form>
+    </div>
+    </div>
+{% endblock %}

@@ -3,22 +3,62 @@
 Registration
 {% endblock %}
 {% block contain %}
+    <div class="container">
     <div class="card">
     <div class="card-title">
             <h1>Registration</h1>
     </div>
     <div class="card-body">
-    <form method="post" action=".">
+    <div class="container">
+    <form method="post" action="{% url 'register' %}">
         {% csrf_token %}
-        {% for f in form %}
-            <p>{{ f.label }}</p>
-            <div class="form-group">
-            {{ f }}
+        <div class="row">
+             <div class="form-group col-lg-6 ">
+               <p> <strong>Username</strong> </p>
+                {{form.username}} {% if form.username.errors %} {% for error in form.username.errors %}
+                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
+                <span style="font-size: 12px;color:darkmagenta;">Please enter the email address </span>
+             </div>
+             <div class="form-group col-lg-6">
+               <p> <strong>Passwrod</strong> </p>
+                {{form.password}} {% if form.errors %} {%for error in form.non_field_errors %}
+                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {%endfor%} {%endif%}
+                <span style="font-size: 12px;color:darkmagenta;">Enter greater then 6 character </span>
+                <br>
+            </div>
+            <div class="form-group col-lg-6">
+                <p><strong>Confirm Passwrod</strong></p>
+                {{form.confirm_password}}
             </div>
 
-        {% endfor %}
+            <div class="form-group col-md-6 col-lg-6 col-xl-6 mx-auto mb-4 ">
+                <p><strong> First Name</strong></p>
+                {{form.first_name}} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
+                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
+                <span style="font-size: 12px;color:darkmagenta;">Enter only character </span>
+            </div>
+            <div class="form-group col-lg-6">
+                <p><strong>Last Name</strong></p>
+                {{ form.last_name }} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
+                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
+                <span style="font-size: 12px;color:darkmagenta;">Enter only character </span>
+            </div>
+{#            <div class="form-group col-lg-6">#}
+{#                <p><strong></strong></p>#}
+{#            </div>#}
+        </div>
+
+{#        {% for f in form %}#}
+{#            <p>{{ f.label }}</p>#}
+{#            <div class="form-group">#}
+{#            {{ f }}#}
+{#            </div>#}
+{##}
+{#        {% endfor %}#}
         <input type="submit" class="btn btn-outline-success" value="Submit" style="margin-left: 50px">
     </form>
+    </div>
+    </div>
     </div>
     </div>
 {% endblock %}

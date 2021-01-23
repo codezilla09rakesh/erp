@@ -7,7 +7,7 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('home/', views.home, name="home"),
     path('register/', views.register, name="register"),
-    path('login/', views.login, name="login"),
+    path('login/', views.Userlogin, name="login"),
     path('profile/',views.profile, name="profile"),
     path('', RedirectView.as_view(url='home/')),
 

@@ -9,7 +9,19 @@
             <h1>Profile</h1>
     </div>
     <div class="card-body">
-        {{ form }}
+        <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.mobile.errors %} {% for error in form.mobile.errors %}
+            <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
+                    {% for f in form %}
+                        <p>{{ f.label }}</p>
+                        <div class="form-group">
+                        {{ f }}
+                        </div>
+            {% endfor %}
+        <br>
+            <input type="submit" class="btn btn-outline-success" value="Submit" style="margin-left: 50px">
+        </form>
 {#        <div class="container">#}
 {#            <div class="row">#}
 {#                <div class="col-lg-4">#}

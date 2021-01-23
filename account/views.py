@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from account.form import RegisterForm, UserLogin, MyProfileForm
 from django.contrib.auth import login, logout, authenticate
+from account.models import MyProfile
+
 from django.contrib import messages
 from django.http import HttpResponse
 
@@ -34,11 +36,18 @@ def register(req):
 
 def Userlogin(req):
     form = UserLogin()
+    if req.method == "POST":
+        form = UserLogin(req.POST)
+        if form.is_valid():
+            user = authenticate(username = req.POST.get('username'),password = req.POST.get('password'))
+            if user is not None:
+                login(req, user)
+                return redirect('profile')
     context = {'form': form}
     return render(req, "accounts/login.html", context)
 
 def profile(req):
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",req.user)
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", req.user)
     if req.method == "POST":
         form = MyProfileForm(req.POST, req.FILES)
         if form.is_valid():
@@ -46,13 +55,21 @@ def profile(req):
             mobile = req.POST.get('mobile')
             gender = req.POST.get('gender')
             manager = req.POST.get('manager')
-            profile_pic = req.FILE.get('profile_pic')
+            profile_pic = req.FILES.get('profile_pic')
             MyProfile.objects.create(user=user,
                                      mobile=mobile,
-                                     gender=)
+                                     gender=gender,
+                                     manager=manager,
+                                     profile_pic=profile_pic,)
         else:
             print(form.errors)
     else:
         form = MyProfileForm()
     context = {'form': form}
     return render(req, "accounts/profile.html", context)
+
+
+def Userlogout(req):
+    if req.user.is_authenticated:
+        logout(req)
+        return redirect('login')

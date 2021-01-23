@@ -2,10 +2,11 @@ from django import forms
 from django.contrib.auth.models import User
 from account.models import MyProfile
 from django.core import validators
+from account.validation import Validator
 
 class RegisterForm(forms.ModelForm):
     # username = forms.CharField(validators=[validator.username],widget=forms.TextInput(attrs={'placeholder':'Enter username','class':'form-control'}))
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter username', 'class':'form-control'}))
+    username = forms.CharField(validators=[Validator.username], widget=forms.TextInput(attrs={'placeholder':'Enter username', 'class':'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Enter password', 'class' : 'form-control'}))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder' : 'Enter confirm password', 'class':'form-control'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Enter you first name', 'class':'form-control'}))

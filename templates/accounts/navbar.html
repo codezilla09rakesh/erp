@@ -18,12 +18,18 @@
       </li>
     </ul>
       <ul class="navbar-nav ml-auto">
+          {% if request.user.is_authenticated %}
+              <li class="nav_flot">
+              <a class="btn btn-danger" href="{% url 'logout' %}">LogOut</a>
+              </li>
+              {% else %}
          <li class="nav_flot " >
               <a class="btn btn-outline-primary" href="{% url 'register' %}">Register</a>
           </li>
           <li class="nav_flot float-right">
               <a class="btn btn-outline-success" href="{% url 'login' %}">Login</a>
           </li>
+          {% endif %}
     </ul>
 {#    <form class="form-inline my-2 my-lg-0">#}
 {#      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}

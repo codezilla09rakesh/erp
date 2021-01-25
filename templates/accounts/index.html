@@ -18,7 +18,9 @@
             <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Total Remaining Leave::</span> 6 </p>
                     </div>
                     <div class="col-lg-6">
+                    <a href="{% url 'list_liaves' %}" style="float: right">Your leave</a><br>
                         {% if request.user.is_manager %}
+                           <a href="#" style="float: right;">Approved leave</a>
 {#                            <a href="#" class="btn btn-danger" style="float: right"> Remove Employee</a>#}
                         <h4>Your Employee</h4>
                             {%for e in employee_list %}
@@ -26,6 +28,7 @@
                             {% endfor %}
                         {% else %}
                             <h4>Your Manager</h4>
+                            <p>{{ employee_list }}</p>
                         {% endif %}
 
                     </div>

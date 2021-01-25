@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from account.form import RegisterForm, UserLogin, MyProfileForm
 from django.contrib.auth import login, logout, authenticate
 from account.models import MyProfile, CustomUser
@@ -14,11 +14,12 @@ from django.http import HttpResponse
 # Create your views here.
 def home(req):
     user = req.user
-    print('$$$$', user)
-    your_employee = YourEmployee.objects.filter(manager=user)
-    print('%%%%%%%%%%%%%', your_employee)
+    if user.is_manager:
+        your_employee = YourEmployee.objects.filter(manager=user)
+    else:
+        your_employee = YourEmployee.objects.get(employee=user)
     context = {'employee_list': your_employee}
-    return render(req, "accounts/index.html", context )
+    return render(req, "accounts/index.html", context)
 
 @unauthenticated_user
 def register(req):
@@ -148,7 +149,7 @@ def RemoveEmployee(req):
     if req.method == "POST":
         for employee in your_employee:
             id = req.POST.get(str(employee.id))
-            print('$$$$$$$$$$$$$$$$$$', id)
+            # print('$$$$$$$$$$$$$$$$$$', id)
             if id:
                 YourEmployee.objects.get(id = employee.id).delete()
                 return redirect('home')

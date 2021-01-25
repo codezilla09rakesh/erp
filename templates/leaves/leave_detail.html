@@ -1,0 +1,24 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block contain %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>List of Leaves</h4>
+            </div>
+            <div class="card-body">
+                <h6>Detail of leaves</h6>
+                <h4>{{ leave.title }}</h4>
+                <p>{{ leave.description }}</p>
+                <p>{{ leave.starting_date }}</p>
+                {% if leave.ending_date %}
+                <p>{{ leave.ending_date }}</p>
+                {% else %}
+                <p>{{ leave.half_day }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

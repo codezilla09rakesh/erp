@@ -20,6 +20,10 @@
                     <p>5</p>
                     <p>6</p>
                 </div>
+                <h6>List of leaves</h6>
+                {% for leave in leaves %}
+                    <a href="{% url 'detail_leave' leave.id %}"><p>{{ forloop.counter }}.  {{ leave.title }}</p></a>
+                {% endfor %}
             </div>
         </div>
     </div>

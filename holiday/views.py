@@ -37,8 +37,11 @@ def AddLeave(req):
 
 def ListLeaves(req):
     user = CustomUser.objects.get(username = req.user)
-    print(type(user), user)
     leave = Leave.objects.filter(employee=user)
-    print('lear', leave)
-    context = {}
+    context = {"leaves":leave}
     return render(req, "leaves/show_leaves.html", context)
+
+def ShowLeave(req,id):
+    leave = Leave.objects.get(id=id)
+    context = {'leave':leave}
+    return render(req,'leaves/leave_detail.html',context)

@@ -6,7 +6,6 @@ class Validator:
             raise validators.ValidationError('Domain name should be @gmail.com')
 
     def mobile(phone):
-        phone = str(phone)
         if not phone.isdigit():
             raise validators.ValidationError("Enter correct mobile number")
 

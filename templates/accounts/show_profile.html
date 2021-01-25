@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}
+    Profile
+{% endblock %}
+{% block contain %}
+    <div class="container">
+    <br>
+    <div class="card">
+    <div class="row">
+        <div class="col-lg-4">
+            <img src="{% static 'img/none.png' %}" width="200px" style="padding: 20px">
+        </div>
+        <div class="col-lg-8">
+            <a href="{% url 'edit_profile' %}" class="btn btn-dark" style="margin: 20px">Edit Profile</a>
+            <br>
+            <h5>Name: {{ profile.user.first_name}} {{  profile.user.last_name }}</h5>
+            <h5>Email: {{ profile.user.email}} </h5>
+            <h5>Gender: {{ profile.gender}}</h5>
+            <h5>Mobile: {{ profile.mobile}}</h5>
+
+{#            <h5>: {{ profile.holiday}}</h5>#}
+
+
+
+        </div>
+    </div>
+        </div>
+    </div>
+{% endblock %}

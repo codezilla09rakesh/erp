@@ -1,0 +1,27 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+    Add Employee
+{% endblock %}
+{% block contain %}
+    <div class="container">
+    <div class="card">
+    <div class="card-header">
+        <h1 style="text-align: center; margin: 10px; padding: 15px; background-color: #9fcdff; color: white">Codezilla</h1>
+    </div>
+        <div class="card-body">
+        <h4>Add Employee</h4>
+        <br>
+        <form method="POST" action="{% url 'add_employee' %}">
+        {% csrf_token %}
+
+            {% for f in user %}
+                <input type="checkbox" id="{{ f.id }}" name="{{ f.id }}" value="{{ f.first_name }}">
+                <label for="{{ f.id }}">{{ f.first_name }} {{ f.last_name }}</label><br>
+            {% endfor %}
+        <input type="submit" class="btn btn-primary" value="Save">
+                </form>
+
+        </div>
+        </div>
+    </div>
+{% endblock %}

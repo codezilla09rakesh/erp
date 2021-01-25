@@ -13,6 +13,18 @@ Registration
     <form method="post" action="{% url 'register' %}">
         {% csrf_token %}
         <div class="row">
+        <div class="form-group col-md-6 col-lg-6 col-xl-6 mx-auto mb-4 ">
+                <p><strong> First Name</strong></p>
+                {{form.first_name}} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
+                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
+                <span style="font-size: 12px;color:darkmagenta;">Enter only character </span>
+            </div>
+        <div class="form-group col-lg-6">
+                <p><strong>Last Name</strong></p>
+                {{ form.last_name }} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
+                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
+                <span style="font-size: 12px;color:darkmagenta;">Enter only character </span>
+            </div>
              <div class="form-group col-lg-6 ">
                <p> <strong>Username</strong> </p>
                 {{form.username}} {% if form.username.errors %} {% for error in form.username.errors %}
@@ -31,17 +43,9 @@ Registration
                 {{form.confirm_password}}
             </div>
 
-            <div class="form-group col-md-6 col-lg-6 col-xl-6 mx-auto mb-4 ">
-                <p><strong> First Name</strong></p>
-                {{form.first_name}} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
-                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
-                <span style="font-size: 12px;color:darkmagenta;">Enter only character </span>
-            </div>
             <div class="form-group col-lg-6">
-                <p><strong>Last Name</strong></p>
-                {{ form.last_name }} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
-                <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}
-                <span style="font-size: 12px;color:darkmagenta;">Enter only character </span>
+                <strong style="margin-right: 20px">Are you manager?</strong>
+                {{ form.is_manager }}
             </div>
 {#            <div class="form-group col-lg-6">#}
 {#                <p><strong></strong></p>#}

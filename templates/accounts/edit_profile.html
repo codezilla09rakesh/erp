@@ -9,7 +9,7 @@
             <h1>Profile</h1>
     </div>
     <div class="card-body">
-        <form method="POST" action="{% url 'add_profile' %}" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
         {% csrf_token %}
         {% if form.mobile.errors %} {% for error in form.mobile.errors %}
             <strong class="text-danger" style="font-size: 12px;">{{error}}</strong><br> {% endfor %} {% endif %}

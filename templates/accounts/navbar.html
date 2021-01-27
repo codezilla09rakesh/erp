@@ -13,9 +13,10 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'apply_leave' %}">Leave</a>
       </li>
+    {% if request.user.is_authenticated %}
         <li class="nav-item">
-        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-      </li>
+            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+        </li>
         {% if request.user.is_manager %}
              <li class="nav-item">
         <a class="nav-link" href="{% url 'add_employee' %}">Add Employee</a>
@@ -24,9 +25,13 @@
         <a class="nav-link" href="{% url 'remove_employee' %}">Remove Employee</a>
       </li>
         {% endif %}
+    {% endif %}
     </ul>
       <ul class="navbar-nav ml-auto">
           {% if request.user.is_authenticated %}
+              <li class="nav_flot">
+              <p><span style="font-size: 25px; padding: 15px">Name :</span>{{ request.user.first_name }}</p>
+              </li>
               <li class="nav_flot">
               <a class="btn btn-danger" href="{% url 'logout' %}">LogOut</a>
               </li>

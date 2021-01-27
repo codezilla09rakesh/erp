@@ -12,17 +12,19 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
-                    <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Your Manager ::</span> Hello </p>
-            <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Your Leave ::</span> 12 </p>
-            <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Taken Leave ::</span> 6 </p>
-            <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Total Remaining Leave::</span> 6 </p>
+{#                    <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Your Manager ::</span> {{ employee_list.customuser. }} </p>#}
+{#            <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Your Leave ::</span> 12 </p>#}
+            <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Taken Leave ::</span>
+                {{ taken_leave }} </p>
+{#            <p style="margin-left: 25px; font-size: 20px;"><span style="font-size: 25px;padding-right:20px">Total Remaining Leave::</span> 6 </p>#}
                     </div>
                     <div class="col-lg-6">
                     <a href="{% url 'list_liaves' %}" style="float: right">Your leave</a><br>
+                    {% if request.user.is_authenticated %}
                         {% if request.user.is_manager %}
-                           <a href="#" style="float: right;">Approved leave</a>
+                           <a href="{% url 'approved_leave' 'check' %}" style="float: right;">Approved leave</a>
 {#                            <a href="#" class="btn btn-danger" style="float: right"> Remove Employee</a>#}
-                        <h4>Your Employee</h4>
+                            <h4>Your Employee</h4>
                             {%for e in employee_list %}
                                 <p>{{ e.employee.first_name }} {{ e.employee.last_name }}</p>
                             {% endfor %}
@@ -30,7 +32,7 @@
                             <h4>Your Manager</h4>
                             <p>{{ employee_list }}</p>
                         {% endif %}
-
+                    {% endif %}
                     </div>
                 </div>
             </div>

@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 # from django.contrib.auth.models import User
 from account.form import RegisterForm, UserLogin, MyProfileForm
 from django.contrib.auth import login, logout, authenticate
 from account.models import MyProfile, CustomUser
 from django.contrib.auth.decorators import login_required
 from account.decorators import unauthenticated_user
-from holiday.models import YourEmployee
+from holiday.models import YourEmployee, Leave
 from django.contrib import messages
 
 from django.contrib import messages
@@ -13,12 +13,21 @@ from django.http import HttpResponse
 
 # Create your views here.
 def home(req):
-    user = req.user
-    if user.is_manager:
-        your_employee = YourEmployee.objects.filter(manager=user)
+    if req.user.is_authenticated:
+        user = req.user
+        user = CustomUser.objects.get(username = user)
+        if user.is_manager:
+            your_employee = YourEmployee.objects.filter(manager=user)
+        else:
+            try:
+                your_employee = YourEmployee.objects.get(employee=user)
+            except:
+                your_employee  = None
+
+        taken_leave = Leave.objects.filter(employee = user, status='approved').count()
+        context = {'employee_list': your_employee, "taken_leave":taken_leave}
     else:
-        your_employee = YourEmployee.objects.get(employee=user)
-    context = {'employee_list': your_employee}
+        context = {}
     return render(req, "accounts/index.html", context)
 
 @unauthenticated_user
@@ -58,7 +67,7 @@ def Userlogin(req):
             user = authenticate(username = req.POST.get('username'),password = req.POST.get('password'))
             if user is not None:
                 login(req, user)
-                return redirect('profile')
+                return redirect('home')
             else:
                 messages.info(req, 'Username or Password is incorrect ')
     context = {'form': form}
@@ -94,10 +103,14 @@ def Editprofile(req):
     profile = MyProfile.objects.get(user = user)
     form = MyProfileForm(instance=profile)
     if req.method == "POST":
-        print("I am in side of Post")
+
+        # When will new file is upload then old file has deleted
+        form = MyProfileForm(req.POST, req.FILES)
+        if form.is_valid() and 'profile_pic' in req.FILES:
+            profile.profile_pic.delete()
+
         form = MyProfileForm(req.POST, req.FILES, instance=profile)
         if form.is_valid():
-            print('form is valid')
             form.save()
             return redirect('profile')
         else:

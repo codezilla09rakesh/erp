@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.core import validators
+import os
 from account.validation import Validator
 
 # Create your models here.
@@ -15,9 +16,10 @@ class MyProfile(models.Model):
     user = models.OneToOneField(to=CustomUser, on_delete=models.CASCADE)
     mobile = models.CharField(max_length=15, validators=[Validator.mobile])
     gender = models.CharField(max_length=50, choices=category)
-    manager = models.CharField(max_length=225, null=True, blank=True)
     profile_pic = models.ImageField(default='static/img/none.png', upload_to='profile_pic/', null=True, blank=True)
     cr_date = models.DateTimeField(auto_now_add=True)
+
+
 
     def __str__(self):
         return str(self.user.first_name)
@@ -39,4 +41,5 @@ class MyProfile(models.Model):
 #     else:
 #         instance.myprofile.save()
 
+#
 

@@ -1,0 +1,52 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block contain %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>Approved of Leaves</h4>
+            </div>
+            <div class="card-body">
+                    <div id="accordion">
+                         {% for leave in leaves %}
+                         <div class="card">
+                             <div class="card-header" id="heading_{{ leave.id }}">
+                                 <h5 class="mb-0">
+                                     <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapse_{{ leave.id }}" aria-expanded="false" aria-controls="collapse_{{ leave.id }}">
+                                         <p>{{ forloop.counter }}. {{ leave.employee.first_name }} {{ leave.employee.last_name }}</p>
+                                     </a>
+                                 </h5>
+                             </div>
+                             <div id="collapse_{{ leave.id }}" class="collapse" aria-labelledby="heading_{{ leave.id }}" data-parent="#accordion">
+                                 <div class="card-body">
+                                      <h4> Title</h4>
+                                     <p style="margin-left: 20px">{{ leave.title }}</p>
+                                      <h4> Description</h4>
+                                     <p style="margin-left: 20px">{{ leave.description }}</p>
+                                     <h4> Starting Date</h4>
+                                     <p style="margin-left: 20px">{{ leave.starting_date|date:"d M, Y"}}</p>
+                                     {% if leave.ending_date %}
+                                         <h4>End Date</h4>
+                                         <p style="margin-left: 20px">{{ leave.ending_date|date:"d M, Y"}}</p>
+                                     {% else %}
+                                         <h4> Half Day</h4>
+                                         <p style="margin-left: 20px">{{ leave.half_day }}</p>
+                                     {% endif %}
+                                 <form method="POST" action="{% url 'approved_leave' leave.id %}">
+                                     {% csrf_token %}
+                                     {{ form }}
+                                     <br>
+                                     <input type="submit" class="btn btn-outline-success" value="Submit">
+                                 </form>
+                                 </div>
+                             </div>
+                         </div>
+                        {% endfor %}
+                    </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

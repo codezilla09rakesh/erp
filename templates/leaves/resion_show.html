@@ -1,0 +1,18 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block contain %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>Reject Detail</h4>
+            </div>
+            <div class="card-body">
+                <h4>Title</h4>
+                <p style="margin-left: 50px">{{ reject.title }}</p>
+                <h4>Description</h4>
+                <p style="margin-left: 50px">{{ reject.description }}</p>
+            </div>
+
+{% endblock %}

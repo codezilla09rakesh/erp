@@ -9,15 +9,22 @@
                 <h4>List of Leaves</h4>
             </div>
             <div class="card-body">
-                <h6>Detail of leaves</h6>
-                <h4>{{ leave.title }}</h4>
-                <p>{{ leave.description }}</p>
-                <p>{{ leave.starting_date }}</p>
+                <h3>Detail of leaves</h3>
+            <div class="container">
+                <h4> Title</h4>
+                <p style="margin-left: 20px">{{ leave.title }}</p>
+                <h4> Description</h4>
+                <p style="margin-left: 20px">{{ leave.description }}</p>
+                <h4> Starting Date</h4>
+                <p style="margin-left: 20px">{{ leave.starting_date|date:"d M, Y"}}</p>
                 {% if leave.ending_date %}
-                <p>{{ leave.ending_date }}</p>
+                    <h4>End Date</h4>
+                    <p style="margin-left: 20px">{{ leave.ending_date|date:"d M, Y"}}</p>
                 {% else %}
-                <p>{{ leave.half_day }}</p>
+                    <h4> Half Day</h4>
+                <p style="margin-left: 20px">{{ leave.half_day }}</p>
                 {% endif %}
+            </div>
             </div>
         </div>
     </div>

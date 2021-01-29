@@ -4,7 +4,7 @@ from account.form import RegisterForm, UserLogin, MyProfileForm
 from django.contrib.auth import login, logout, authenticate
 from account.models import MyProfile, CustomUser
 from django.contrib.auth.decorators import login_required
-from account.decorators import unauthenticated_user
+from account.decorators import unauthenticated_user, is_manager
 from holiday.models import YourEmployee, Leave
 from django.contrib import messages
 
@@ -12,10 +12,12 @@ from django.contrib import messages
 from django.http import HttpResponse
 
 # Create your views here.
+@ login_required(login_url='login')
 def home(req):
     if req.user.is_authenticated:
         user = req.user
         user = CustomUser.objects.get(username = user)
+        # print('user',req.user.is_manager)
         if user.is_manager:
             your_employee = YourEmployee.objects.filter(manager=user)
         else:
@@ -24,7 +26,7 @@ def home(req):
             except:
                 your_employee  = None
 
-        taken_leave = Leave.objects.filter(employee = user, status='approved').count()
+        taken_leave = Leave.objects.filter(employee = user, status='accepted').count()
         context = {'employee_list': your_employee, "taken_leave":taken_leave}
     else:
         context = {}
@@ -48,11 +50,17 @@ def register(req):
                 is_manager = var,
             )
             user.save()
+            print('user',user)
+            if var:
+                manager = CustomUser.objects.get(username='admin')
+                YourEmployee.objects.create(
+                    manager=manager,
+                    employee = user, )
             if user is not None:
                 # Here login is set the user in session. Now we get whole info of user
                 login(req, user)
-                print("user is logged in")
-                return redirect('profile')
+                # print("user is logged in")
+                return redirect('home')
     else:
         form = RegisterForm()
     context = {'form': form}
@@ -80,15 +88,16 @@ def Addprofile(req):
         form = MyProfileForm(req.POST, req.FILES)
         if form.is_valid():
             user = req.user
+            user = CustomUser.objects.get(username = user)
             mobile = req.POST.get('mobile')
             gender = req.POST.get('gender')
-            manager = req.POST.get('manager')
             profile_pic = req.FILES.get('profile_pic')
+            print('profile pic1 ',profile_pic)
             MyProfile.objects.create(user=user,
                                      mobile=mobile,
                                      gender=gender,
-                                     manager=manager,
                                      profile_pic=profile_pic,)
+
             return redirect('profile')
         else:
             print(form.errors)
@@ -134,7 +143,7 @@ def Userlogout(req):
         logout(req)
         return redirect('login')
 
-
+@is_manager
 def AddEmployee(req):
     user = CustomUser.objects.filter(is_manager=False)
     employee = [i.employee for i in YourEmployee.objects.all()]
@@ -156,6 +165,7 @@ def AddEmployee(req):
     context = {'user':user_list}
     return render(req, "accounts/Add_employee.html", context)
 
+@is_manager
 def RemoveEmployee(req):
     user = req.user
     your_employee = YourEmployee.objects.filter(manager=user)

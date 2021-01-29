@@ -1,13 +1,15 @@
-from django.shortcuts import render,redirect
-from holiday.form import LeaveForm, ApprovedForm, ResionForm
+from django.shortcuts import render, redirect
+from holiday.form import LeaveForm, ResionForm
 from holiday.models import Leave, YourEmployee, Resions
 from account.models import CustomUser
+from account.decorators import is_manager, manageravailable
 from django.contrib.auth.decorators import login_required
 
 # from
 # Create your views here.
 
 @ login_required(login_url='login')
+@manageravailable
 def AddLeave(req):
     user = CustomUser.objects.get(username= req.user)
     print('user', user)
@@ -53,20 +55,33 @@ def ShowLeave(req,id):
     context = {'leave':leave}
     return render(req,'leaves/leave_detail.html',context)
 
-def ApprovedLeave(req,val):
+@is_manager
+@ login_required(login_url='login')
+def ApprovedLeave(req,id,val):
     user = CustomUser.objects.get(username=req.user)
     leaves = Leave.objects.filter(manager = user, status='panding')
-    if req.method == "POST":
-        form = ApprovedForm(req.POST)
-        if form.is_valid():
-            leave = Leave.objects.get(id = int(val))
-            leave.status = req.POST['status']
-            leave.save()
-            print('staus', req.POST['status'])
-            if req.POST['status'].strip(" ") == "resion":
-                return redirect('resion',int(val))
-        else:
-            print(form.errors)
+    try:
+        leave = Leave.objects.get(id=id)
+    except:
+        pass
+    if val == 'accept':
+        leave.status = "accepted"
+        leave.save()
+        return redirect('home')
+    elif val == "reject":
+        leave.status = "reject"
+        leave.save()
+        return redirect('resion', leave.id)
+        # form = ApprovedForm(req.POST)
+        # if form.is_valid():
+        #     leave = Leave.objects.get(id = int(val))
+        #     leave.status = req.POST['status']
+        #     leave.save()
+        #     print('staus', req.POST['status'])
+        #     if req.POST['status'].strip(" ") == "resion":
+        #         return redirect('resion',int(val))
+        # else:
+        #     print(form.errors)
         # for leave in leaves:
         #     type = req.POST.get(str(leave.id))
         #     if type:
@@ -82,11 +97,13 @@ def ApprovedLeave(req,val):
         #         else:
         #             print("else",type)
     else:
-        form = ApprovedForm()
+        pass
     # print('var = ',leaves[0].employee.first_name)
-    context = {'leaves':leaves, 'form':form}
+    context = {'leaves':leaves,}
     return render(req, "leaves/approved_leave.html",context)
 
+@is_manager
+@ login_required(login_url='login')
 def ResionView(req,id):
     if req.method == "POST":
         form = ResionForm(req.POST)
@@ -106,6 +123,8 @@ def ResionView(req,id):
     context = {'form': form, 'id': id}
     return render(req, "leaves/resion_form.html",context)
 
+
+@ login_required(login_url='login')
 def ResionShow(req, id):
     reject = Resions.objects.get(leave= id)
     print('reject',reject)

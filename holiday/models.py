@@ -13,7 +13,7 @@ class YourEmployee(models.Model):
 
 class Leave(models.Model):
     day = (('select ', 'Select'), ('first_half', 'First Half'), ('second_half', 'Second Half'))
-    status = (('panding', 'Panding'), ('accepted', 'Accepted'), ('resion', 'resion'))
+    # status = (('panding', 'Panding'), ('accepted', 'Accepted'), ('resion', 'resion'))
     manager = models.ForeignKey(to=CustomUser, related_name='leave_manager', on_delete=models.CASCADE)
     employee = models.ForeignKey(to=CustomUser, related_name='leave_employee', on_delete=models.CASCADE)
     title = models.CharField(max_length=225)
@@ -21,7 +21,7 @@ class Leave(models.Model):
     starting_date = models.DateField()
     ending_date = models.DateField(null=True, blank=True)
     half_day = models.CharField(max_length=225, choices=day, default='Select')
-    status = models.CharField(max_length=225, choices=status, default='panding')
+    status = models.CharField(max_length=225, default='panding')
     cr_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -36,6 +36,8 @@ class Resions(models.Model):
 
     def __str__(self):
         return str(self.employee.first_name)
+
+
 
 
 

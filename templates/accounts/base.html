@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
 
@@ -15,6 +16,15 @@
 </head>
 <body>
 {% include 'accounts/navbar.html' %}
+{% if request.user.is_authenticated %}
+{% if request.get_profile  %}
+{% else %}
+    <div class="alert alert-danger alert-dismissible">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>!</strong> Please Create Your Profile First.
+</div>
+{% endif %}
+{% endif %}
 {% block contain %} {% endblock %}
 </body>
 </html>

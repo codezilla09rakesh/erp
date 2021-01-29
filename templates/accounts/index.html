@@ -22,8 +22,10 @@
                     <a href="{% url 'list_liaves' %}" style="float: right">Your leave</a><br>
                     {% if request.user.is_authenticated %}
                         {% if request.user.is_manager %}
-                           <a href="{% url 'approved_leave' 'check' %}" style="float: right;">Approved leave</a>
+                           <a href="{% url 'approved_leave' request.user.id 'check' %}" style="float: right;">Approved leave</a>
 {#                            <a href="#" class="btn btn-danger" style="float: right"> Remove Employee</a>#}
+                            <h4>Your Manager</h4>
+                            <p>Admin</p>
                             <h4>Your Employee</h4>
                             {%for e in employee_list %}
                                 <p>{{ e.employee.first_name }} {{ e.employee.last_name }}</p>

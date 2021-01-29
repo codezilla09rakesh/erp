@@ -37,7 +37,7 @@
                                <th scope="row">{{ forloop.counter }}</th>
                                <td>{{ leave.title }}</td>
                                <td>{{ leave.cr_date|date:"d M, Y" }}</td>
-                               {% if leave.status == "resion" %}
+                               {% if leave.status == "reject" %}
                                <td> <a href="{% url "resion_show" leave.id %}">Reject</a></td>
                                {% else %}
                                <td>{{ leave.status }}</td>

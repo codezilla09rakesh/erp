@@ -14,6 +14,6 @@ urlpatterns = [
     path('logout/', views.Userlogout, name="logout"),
     path('add-employee/', views.AddEmployee, name="add_employee"),
     path('remove-employee/', views.RemoveEmployee, name="remove_employee"),
-    path('', RedirectView.as_view(url='home/')),
+    path('', RedirectView.as_view(url='login/')),
 
 ]

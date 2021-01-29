@@ -9,41 +9,110 @@
                 <h4>Approved of Leaves</h4>
             </div>
             <div class="card-body">
-                    <div id="accordion">
-                         {% for leave in leaves %}
-                         <div class="card">
-                             <div class="card-header" id="heading_{{ leave.id }}">
-                                 <h5 class="mb-0">
-                                     <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapse_{{ leave.id }}" aria-expanded="false" aria-controls="collapse_{{ leave.id }}">
-                                         <p>{{ forloop.counter }}. {{ leave.employee.first_name }} {{ leave.employee.last_name }}</p>
-                                     </a>
-                                 </h5>
-                             </div>
-                             <div id="collapse_{{ leave.id }}" class="collapse" aria-labelledby="heading_{{ leave.id }}" data-parent="#accordion">
-                                 <div class="card-body">
-                                      <h4> Title</h4>
-                                     <p style="margin-left: 20px">{{ leave.title }}</p>
-                                      <h4> Description</h4>
-                                     <p style="margin-left: 20px">{{ leave.description }}</p>
-                                     <h4> Starting Date</h4>
-                                     <p style="margin-left: 20px">{{ leave.starting_date|date:"d M, Y"}}</p>
-                                     {% if leave.ending_date %}
-                                         <h4>End Date</h4>
-                                         <p style="margin-left: 20px">{{ leave.ending_date|date:"d M, Y"}}</p>
-                                     {% else %}
-                                         <h4> Half Day</h4>
-                                         <p style="margin-left: 20px">{{ leave.half_day }}</p>
-                                     {% endif %}
-                                 <form method="POST" action="{% url 'approved_leave' leave.id %}">
-                                     {% csrf_token %}
-                                     {{ form }}
-                                     <br>
-                                     <input type="submit" class="btn btn-outline-success" value="Submit">
-                                 </form>
-                                 </div>
-                             </div>
-                         </div>
+                <div id="accordion">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">S no. </th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Apply Date</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
+                            <th scope="col">Half Day</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Detail</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for leave in leaves %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
+                                <td>{{ leave.title }}</td>
+                                <td>{{ leave.cr_date|date:"d M, Y" }}</td>
+                                <td>{{ leave.starting_date|date:"d M, Y" }}</td>
+                                {% if leave.ending_date %}
+                                    <td>{{ leave.ending_date|date:"d M, Y" }}</td>
+                                {% else %}
+                                    <td style="text-align: center; font-size: 25px"><p> -- </p></td>
+                                {% endif %}
+                            {% if leave.half_day %}
+                                <td>{{ leave.half_day }}</td>
+                            {% else %}
+                                <td style="text-align: center; font-size: 25px"><p> -- </p></td>
+                            {% endif %}
+                                <td><a href="{% url 'approved_leave' leave.id 'accept' %}"><i class="fa fa-check fa-2x"></i></a>
+                                    <a href="{% url 'approved_leave' leave.id 'reject' %}" style="padding-left: 25px"><i style="color: red" class="fa fa-times fa-2x"></i></i> </a>
+                                </td>
+                            <td><a type="button"  data-toggle="modal" data-target="#exampleModalCenter">
+                                <i class="fa fa-eye fa-2x"></i></a> </td>
+                            <!-- Modal -->
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">{{ leave.title }}</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>  {{ leave.description }} </p>
+                                                <h5>Starting Date</h5>
+                                              <p>{{ leave.starting_date }} </p>
+                                                {% if leave.ending_date %}
+                                                    <h5>Ending Date</h5>
+                                                    <p>{{ leave.ending_date }} </p>
+                                                {% else %}
+                                                    <h5>Half Day</h5>
+                                                    <p>{{ leave.half_day }}</p>
+                                                {% endif %}
+
+                                           </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+{#                                                <button type="button" class="btn btn-primary">Save changes</button>#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
                         {% endfor %}
+                        </tbody>
+                    </table>
+{#                         <div class="card">#}
+{#                             <div class="card-header" id="heading_{{ leave.id }}">#}
+{#                                 <h5 class="mb-0">#}
+{#                                     <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapse_{{ leave.id }}" aria-expanded="false" aria-controls="collapse_{{ leave.id }}">#}
+{#                                         <p>{{ forloop.counter }}. {{ leave.employee.first_name }} {{ leave.employee.last_name }}</p>#}
+{#                                     </a>#}
+{#                                 </h5>#}
+{#                             </div>#}
+{#                             <div id="collapse_{{ leave.id }}" class="collapse" aria-labelledby="heading_{{ leave.id }}" data-parent="#accordion">#}
+{#                                 <div class="card-body">#}
+{#                                      <h4> Title</h4>#}
+{#                                     <p style="margin-left: 20px">{{ leave.title }}</p>#}
+{#                                      <h4> Description</h4>#}
+{#                                     <p style="margin-left: 20px">{{ leave.description }}</p>#}
+{#                                     <h4> Starting Date</h4>#}
+{#                                     <p style="margin-left: 20px">{{ leave.starting_date|date:"d M, Y"}}</p>#}
+{#                                     {% if leave.ending_date %}#}
+{#                                         <h4>End Date</h4>#}
+{#                                         <p style="margin-left: 20px">{{ leave.ending_date|date:"d M, Y"}}</p>#}
+{#                                     {% else %}#}
+{#                                         <h4> Half Day</h4>#}
+{#                                         <p style="margin-left: 20px">{{ leave.half_day }}</p>#}
+{#                                     {% endif %}#}
+{#                                 <form method="POST" action="{% url 'approved_leave' leave.id %}">#}
+{#                                     {% csrf_token %}#}
+{#                                     {{ form }}#}
+{#                                     <br>#}
+{#                                     <input type="submit" class="btn btn-outline-success" value="Submit">#}
+{#                                 </form>#}
+{#                                 </div>#}
+{#                             </div>#}
+{#                         </div>#}
                     </div>
 
             </div>

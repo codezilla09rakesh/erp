@@ -25,7 +25,7 @@ SECRET_KEY = 'jl4%3bw%6-0kg-k&#!4_mh6zfvyd&8360efeoz-!a!z9gah5*d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'rest_framework',
-    'corsheaders',
+    # 'corsheaders',
     'account',
     'holiday',
-    'apiApp',
+    'apiApp'
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'
@@ -79,30 +79,44 @@ TEMPLATES = [
     },
 ]
 
+# Misc configs
+URL_TYPE = "http://0.0.0.0:8000"
+
+
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    # ]
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+        "rest_framework.authentication.SessionAuthentication",  # To keep the Browsable API
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",  # To keep the Browsable API
+    "oauth2_provider.backends.OAuth2Backend",
+)
+
+# REST_FRAMEWORK = {
+#     # Use Django's standard `django.contrib.auth` permissions,
+#     # or allow read-only access for unauthenticated users.
+#     # 'DEFAULT_PERMISSION_CLASSES': [
+#     #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+#     # ]
+# }
+#
+# REST_FRAMEWORK = {
+#     'DEFAULT_PARSER_CLASSES': [
+#         'rest_framework.parsers.JSONParser',
+#     ]
+# }
 
 WSGI_APPLICATION = 'erp.wsgi.application'
 
-
+CLIENT_ID ="EVhbxEYRBd5pgF1aVtPObB4rg6j4XH6vsFsSDmLZ"
+CLIENT_SECRET = "haHoQ6dwa7z4fAiga8wohqb0boySyybabOHhnczSxbOVSZ4obIgreVUdvEGNyUBcCSNA7xf4jyLPeG2QPOEgYEBcYdzPs2pWOuDziuEgIDgmLRWRmURNitDkTNnC2rwK"
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'erp',
-        'USER': 'root',
-        "PASSWORD": 123456,
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
 
 
 # Password validation
@@ -129,6 +143,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'erp',
+        'USER': 'root',
+        "PASSWORD": 123456,
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True

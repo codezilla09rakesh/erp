@@ -19,8 +19,14 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = super(RegisterSerializer, self).create(validated_data)
+
         user.set_password(validated_data['password'])
         user.save()
+        if user.is_manager:
+            manager = CustomUser.objects.filter(is_superuser = True)[0]
+            YourEmployee.objects.create(
+                manager = manager,employee = user
+            )
         return user
 
 class LoginSerializer(serializers.Serializer):
@@ -36,7 +42,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class LeaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Leave
-        # fields = ['title', 'description', 'starting_date', 'ending_date', 'half_day', 'status']
+        # fields = ['id', 'title', 'description', 'starting_date', 'ending_date', 'half_day', 'status']
         fields = "__all__"
     # def create(self, validated_data):
     #     leave = super(LeaveSerializer, self).create(validated_data)

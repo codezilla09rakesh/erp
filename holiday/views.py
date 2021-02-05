@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 @manageravailable
 def AddLeave(req):
     user = CustomUser.objects.get(username= req.user)
-    print('user', user)
+    # print('user', user)
     try:
         manager = YourEmployee.objects.get(employee = user)
         manager = CustomUser.objects.get(username=manager.manager.username)
@@ -24,6 +24,7 @@ def AddLeave(req):
         if form.is_valid():
             if req.POST['ending_date']:
                 date = req.POST['ending_date']
+                print("data", date)
             else:
                 date = None
             Leave.objects.create(

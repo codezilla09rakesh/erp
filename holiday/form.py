@@ -20,11 +20,7 @@ class LeaveForm(forms.ModelForm):
     def clean(self):
         ending_date = self.cleaned_data['ending_date']
         half_day = self.cleaned_data['half_day'].strip(" ").lower()
-        print('half', half_day,ending_date)
-        if ending_date:
-            print('in side of end date')
-        else:
-            print('out sido of end')
+        # print('half', half_day,ending_date)
         if half_day=="first_half" or half_day=="second_half":
             if ending_date:
                 raise validators.ValidationError("You can select only either an end date or days ")

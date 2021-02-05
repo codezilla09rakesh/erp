@@ -31,6 +31,8 @@ from erp import settings
 class UserList(ListModelMixin, GenericAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    # empty permission means no permission applyed globally and locally
+    permission_classes = []
 
     def get(self, request, *args, **kwargs):
         return self.list(request)
@@ -38,6 +40,7 @@ class UserList(ListModelMixin, GenericAPIView):
 class ManagerList(ListModelMixin, GenericAPIView):
     queryset = CustomUser.objects.filter(is_manager = True)
     serializer_class =UserSerializer
+    permission_classes = []
 
     def get(self, request, *args, **kwargs):
         return self.list(request)
@@ -46,6 +49,7 @@ class ManagerList(ListModelMixin, GenericAPIView):
 class UserRegister(CreateModelMixin, GenericAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = []
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -98,6 +102,11 @@ class UserRegister(CreateModelMixin, GenericAPIView):
 class Token(ObtainAuthToken, GenericAPIView):
     permission_classes = []
     serializer_class = LoginAuthSerializer
+
+    def get(self, request, *args, **kwargs):
+        data = {"get":"Get method is not support"}
+        return Response(data=data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         """
         Gets tokens with username/email and password. Input should be in the format:
@@ -133,17 +142,16 @@ class Token(ObtainAuthToken, GenericAPIView):
                 #     return Response({"message": "Email not verified."})
         except Exception as e:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={'error': str(e)})
-        print("fgdlkdflkgjdflkjglkdfj")
         r = requests.post(settings.URL_TYPE + "/o/token/",
                           data={
                               "grant_type": "password",
                               "username": username,
                               "password": request.data["password"],
-                              # "scope": scope,
                               "client_id": settings.CLIENT_ID,
                               "client_secret": settings.CLIENT_SECRET,
                           },
-                          )
+                          # verify=True
+                           )
         if r.status_code == 400:
             json_res = {"message": "Bad request or Invalid credentials"}
             return Response(data=json_res, status=r.status_code)
@@ -180,7 +188,7 @@ class RevokeToken(APIView):
     {"token": "<token>"}
     """
     def post(self, request):
-        print('######################################################')
+        print('in from testside of view', request.data["token"])
         r = requests.post(
             settings.URL_TYPE + "/o/revoke_token/",
             data={
@@ -205,12 +213,23 @@ class UserProfile(APIView):
             profile = MyProfile.objects.get(user=user)
             serializer = ProfileSerializer(profile)
             data = serializer.data
-
             return Response(data=data, status=status.HTTP_200_OK)
         except MyProfile.DoesNotExist:
             res = {"profile":"Does Not Exist"}
             # json_data = json.dumps(res)
             return Response(res, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        data['user'] = user.id
+        serializer = ProfileSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            res = {"profile": "Profile is created"}
+            return Response(res, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -247,24 +266,29 @@ class UserLeave(APIView):
             return Response(data=data, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, *args, **kwargs):
-        print("TTTTTTTtttFFFFFFFFFFFFFFFFFFFFFffffffffffffffffffffffff")
+        # print("TTTTTTTtttFFFFFFFFFFFFFFFFFFFFFffffffffffffffffffffffff")
         user = self.get_user(request)
+        user = CustomUser.objects.get(username=user)
+        # print('usern', user)
         manager = YourEmployee.objects.get(employee=user)
         # user = CustomUser.objects.get(id=manager.manager.id)
         data = request.data
+        # print('data', type(data), user.id)
+        # print('data', data, type(data))
         data['employee']= user.id
         data['manager'] = manager.id
         serializer = LeaveSerializer(data=data)
         if serializer.is_valid():
+            # serializer.save(manager=manager.id, employee=user.id)
             serializer.save()
             res ={'success':"Leave applyed"}
-            return Response(res, status=status.HTTP_200_OK)
+            return Response(res, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_200_OK)
 
 @method_decorator(csrf_exempt, name='dispatch')
-class AddEmployee(APIView):
+class YourEmployeeView(APIView):
     permission_classes = [IsAuthenticated, CheckManager]
 
     def get_user(self, request):
@@ -276,17 +300,39 @@ class AddEmployee(APIView):
         youremployee = YourEmployee.objects.filter(manager = user)
         l = []
         for emp in youremployee:
-            print(type(emp.employee))
             l.append(emp.employee)
         serializer = UserSerializer(l, many=True)
         data = serializer.data
         return Response(data=data, status=status.HTTP_200_OK)
 
+@method_decorator(csrf_exempt, name='dispatch')
+class AddEmployee(APIView):
+    permission_classes = [IsAuthenticated, CheckManager]
+
+    def get_user(self, request):
+        user = CustomUser.objects.get(username=request.user)
+        return user
+
+    def get(self, request, *args, **kwargs):
+        # user = self.get_user(request)
+        employee = YourEmployee.objects.all()
+        # converting employee in customuser data type
+        employee = [CustomUser.objects.get(username=i.employee.username) for i in employee]
+        non_manager = CustomUser.objects.filter(is_manager=False)
+        non_manager_employee = []
+        for user in non_manager:
+            if user not in employee:
+                non_manager_employee.append(user)
+
+        serailzer = UserSerializer(non_manager_employee, many=True)
+        data = serailzer.data
+        return Response(data=data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         user = self.get_user(request)
         data = request.data
-        for i in data['employee']:
-            employee_user = CustomUser.objects.get(id=i)
+        for i in data:
+            employee_user = CustomUser.objects.get(id=i["id"])
             YourEmployee.objects.create(manager=user, employee=employee_user)
         else:
             res = {"success": "Add"}
@@ -318,8 +364,9 @@ class RemoveEmployee(APIView):
     def post(self, request, *args, **kwargs):
         user = self.get_user(request)
         data = request.data
-        for i in data['employee']:
-            YourEmployee.objects.get(employee = i).delete()
+        print('data',data)
+        for i in data:
+            YourEmployee.objects.get(employee = i['id']).delete()
         else:
             res = {"success":"Delete"}
             return Response(res,status=status.HTTP_200_OK)

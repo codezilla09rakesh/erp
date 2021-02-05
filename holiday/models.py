@@ -8,7 +8,7 @@ class YourEmployee(models.Model):
     employee = models.ForeignKey(to=CustomUser, related_name='employee', on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.manager.first_name)
+        return str(self.employee.first_name)
 
 
 class Leave(models.Model):

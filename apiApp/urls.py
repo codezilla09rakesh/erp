@@ -3,7 +3,7 @@ from apiApp import views
 from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
-    path('userlist/', views.UserList.as_view(), name="apihome"),
+    path('userlist/', views.UserList.as_view(), name="userlistapi"),
     path('managerlist/', views.ManagerList.as_view(), name="manager_list"),
     path('register/', views.UserRegister.as_view(), name="register"),
     path('login/', views.Token.as_view(), name='token'),
@@ -15,7 +15,9 @@ urlpatterns = [
     path('logout/', views.UserLogOut.as_view(), name="logoutapi"),
 
     path('leave/', views.UserLeave.as_view(), name="leaveapi"),
-    path('resion/<int:id>/', views.AddResion.as_view(), name='resionapi'),
+    # path('resion/<int:id>/', views.AddResion.as_view(), name='resionapi'),
+
+    path('your-employee/', views.YourEmployeeView.as_view(), name="youremployeeapi"),
 
     path('add-employee/', views.AddEmployee.as_view(), name="addemployeeapi"),
     path('remove-employee/', views.RemoveEmployee.as_view(), name="removeemployeeapi"),

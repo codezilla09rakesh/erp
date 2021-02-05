@@ -1,6 +1,8 @@
 user_id = 46
 https://www.webforefront.com/django/modelmultidatabases.html
 "registrations test url" =https://github.com/incuna/django-registration/blob/master/registration/tests.py
+# for multiple database
+https://django-chinese-docs-14.readthedocs.io/en/latest/topics/db/multi-db.html
 
 23/01/2021
 Hello sir,
